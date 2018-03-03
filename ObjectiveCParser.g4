@@ -55,7 +55,7 @@ importDeclaration
 classInterface
     : IB_DESIGNABLE?
       '@interface'
-       className=genericTypeSpecifier (':' superclassName=identifier)? (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
+       className=genericTypeSpecifier (':' superclassName)? (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
       '@end'
     ;
 
@@ -67,7 +67,7 @@ categoryInterface
 
 classImplementation
     : '@implementation'
-       className=genericTypeSpecifier (':' superclassName=identifier)? instanceVariables? implementationDefinitionList?
+       className=genericTypeSpecifier (':' superclassName)? instanceVariables? implementationDefinitionList?
       '@end'
     ;
 
@@ -77,8 +77,20 @@ categoryImplementation
       '@end'
     ;
 
+superclassName
+    : identifier genericSuperclassSpecifier?
+    ;
+
 genericTypeSpecifier
     : identifier ((LT protocolList GT) | genericsSpecifier)?
+    ;
+
+genericSuperclassSpecifier
+    : LT (superclassTypeSpecifierWithPrefixes (',' superclassTypeSpecifierWithPrefixes)*)? GT
+    ;
+
+superclassTypeSpecifierWithPrefixes
+    : typePrefix* typeSpecifier pointer
     ;
 
 protocolDeclaration
@@ -97,7 +109,7 @@ protocolDeclarationList
     ;
 
 classDeclarationList
-    : '@class' genericTypeSpecifier (',' genericTypeSpecifier)* ';'
+    : '@class' identifier (',' identifier)* ';'
     ;
 
 protocolList
@@ -167,7 +179,7 @@ instanceMethodDeclaration
     ;
 
 methodDeclaration
-    : methodType? methodSelector macro? ';'
+    : methodType? methodSelector attributeSpecifier* macro? ';'
     ;
 
 implementationDefinitionList
@@ -230,7 +242,7 @@ genericsSpecifier
     ;
 
 typeSpecifierWithPrefixes
-    : typePrefix* typeSpecifier
+    : typePrefix* typeSpecifier pointer?
     ;
 
 dictionaryExpression
@@ -387,7 +399,7 @@ varDeclaration
     ;
 
 typedefDeclaration
-    : attributeSpecifier? TYPEDEF (declarationSpecifiers typeDeclaratorList | declarationSpecifiers) ';'
+    : attributeSpecifier? TYPEDEF (declarationSpecifiers typeDeclaratorList | declarationSpecifiers) macro? ';'
     ;
 
 typeDeclaratorList
@@ -422,7 +434,7 @@ initDeclarator
     ;
 
 structOrUnionSpecifier
-    : ('struct' | 'union') (identifier | identifier? '{' fieldDeclaration+ '}')
+    : (STRUCT | UNION) (identifier | identifier? '{' fieldDeclaration+ '}')
     ;
 
 fieldDeclaration
@@ -504,7 +516,7 @@ typeSpecifier
     | genericTypeSpecifier
     | structOrUnionSpecifier
     | enumSpecifier
-    | identifier pointer?
+    | KINDOF? identifier pointer?
     ;
 
 typeofExpression
@@ -522,7 +534,7 @@ fieldDeclarator
 
 enumSpecifier
     : 'enum' (identifier? ':' typeName)? (identifier ('{' enumeratorList '}')? | '{' enumeratorList '}')
-    | ('NS_OPTIONS' | 'NS_ENUM') LP typeName ',' identifier RP '{' enumeratorList '}'
+    | (NS_OPTIONS | NS_ENUM) LP typeName ',' identifier RP '{' enumeratorList '}'
     ;
 
 enumeratorList
@@ -605,12 +617,12 @@ statement
     | compoundStatement ';'?
     | selectionStatement ';'?
     | iterationStatement ';'?
-    | jumpStatement ';'?
+    | jumpStatement ';'
     | synchronizedStatement ';'?
     | autoreleaseStatement ';'?
-    | throwStatement ';'?
+    | throwStatement ';'
     | tryBlock ';'?
-    | expressions ';'?
+    | expressions ';'
     | ';'
     ;
 
@@ -619,7 +631,7 @@ labeledStatement
     ;
 
 rangeExpression
-    :  constantExpression ('...' constantExpression)?
+    :  expression ('...' expression)?
     ;
 
 compoundStatement
