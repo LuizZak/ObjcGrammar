@@ -55,26 +55,30 @@ importDeclaration
 classInterface
     : IB_DESIGNABLE?
       '@interface'
-       className=genericTypeSpecifier (':' superclassName)? (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
+       className (':' superclassName)? (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
       '@end'
     ;
 
 categoryInterface
     : '@interface'
-       categoryName=genericTypeSpecifier LP className=identifier? RP (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
+       categoryName=className LP identifier? RP (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
       '@end'
     ;
 
 classImplementation
     : '@implementation'
-       className=genericTypeSpecifier (':' superclassName)? instanceVariables? implementationDefinitionList?
+       className(':' superclassName)? instanceVariables? implementationDefinitionList?
       '@end'
     ;
 
 categoryImplementation
     : '@implementation'
-       categoryName=genericTypeSpecifier LP className=identifier RP implementationDefinitionList?
+       categoryName=className LP identifier RP implementationDefinitionList?
       '@end'
+    ;
+
+className
+    : identifier ((LT protocolList GT) | genericsSpecifier)?
     ;
 
 superclassName
@@ -82,7 +86,7 @@ superclassName
     ;
 
 genericTypeSpecifier
-    : identifier ((LT protocolList GT) | genericsSpecifier)?
+    : identifier ((LT protocolList GT) | genericsSpecifier)
     ;
 
 genericSuperclassSpecifier
@@ -263,7 +267,7 @@ boxExpression
     ;
 
 blockParameters
-    : LP ((typeVariableDeclaratorOrName | 'void') (',' typeVariableDeclaratorOrName)*)? RP
+    : LP ((typeVariableDeclaratorOrName | VOID) (',' typeVariableDeclaratorOrName)*)? RP
     ;
 
 typeVariableDeclaratorOrName
@@ -281,7 +285,7 @@ messageExpression
 
 receiver
     : expression
-    | typeSpecifier
+    | genericTypeSpecifier
     ;
 
 messageSelector
@@ -494,26 +498,26 @@ typeQualifier
     ;
 
 protocolQualifier
-    : 'in'
-    | 'out'
-    | 'inout'
-    | 'bycopy'
-    | 'byref'
-    | 'oneway'
+    : IN
+    | OUT
+    | INOUT
+    | BYCOPY
+    | BYREF
+    | ONEWAY
     ;
 
 typeSpecifier
-    : 'void'
-    | 'char'
-    | 'short'
-    | 'int'
-    | 'long'
-    | 'float'
-    | 'double'
-    | 'signed'
-    | 'unsigned'
+    : VOID
+    | CHAR
+    | SHORT
+    | INT
+    | LONG
+    | FLOAT
+    | DOUBLE
+    | SIGNED
+    | UNSIGNED
     | typeofExpression
-    | genericTypeSpecifier
+    | KINDOF? genericTypeSpecifier pointer?
     | structOrUnionSpecifier
     | enumSpecifier
     | KINDOF? identifier pointer?
@@ -533,7 +537,7 @@ fieldDeclarator
     ;
 
 enumSpecifier
-    : 'enum' (identifier? ':' typeName)? (identifier ('{' enumeratorList '}')? | '{' enumeratorList '}')
+    : ENUM (identifier? ':' typeName)? (identifier ('{' enumeratorList '}')? | '{' enumeratorList '}')
     | (NS_OPTIONS | NS_ENUM) LP typeName ',' identifier RP '{' enumeratorList '}'
     ;
 
@@ -547,7 +551,7 @@ enumerator
 
 enumeratorIdentifier
     : identifier
-    | 'default'
+    | DEFAULT
     ;
 
 directDeclarator
@@ -560,7 +564,7 @@ declaratorSuffix
     ;
 
 parameterList
-    : parameterDeclarationList (',' '...')?
+    : parameterDeclarationList (',' ELIPSIS)?
     ;
 
 pointer
@@ -605,7 +609,7 @@ parameterDeclarationList
 
 parameterDeclaration
     : declarationSpecifiers declarator
-    | 'void'
+    | VOID
     ;
 
 declarator
@@ -772,7 +776,7 @@ argumentExpressionList
 
 argumentExpression
     : expression
-    | typeSpecifier
+    | genericTypeSpecifier
     ;
 
 primaryExpression
