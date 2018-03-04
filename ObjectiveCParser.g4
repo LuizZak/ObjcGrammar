@@ -407,11 +407,7 @@ typedefDeclaration
     ;
 
 typeDeclaratorList
-    : typeDeclarator (',' typeDeclarator)*
-    ;
-
-typeDeclarator
-    : pointer? directDeclarator
+    : declarator (',' declarator)*
     ;
 
 declarationSpecifiers
