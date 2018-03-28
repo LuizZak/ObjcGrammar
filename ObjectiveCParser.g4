@@ -203,7 +203,7 @@ instanceMethodDefinition
     ;
 
 methodDefinition
-    : methodType? methodSelector initDeclaratorList? ';'? attributeSpecifier? compoundStatement
+    : methodType? methodSelector initDeclaratorList? ';'? attributeSpecifier? compoundStatement ';'?
     ;
 
 methodSelector
