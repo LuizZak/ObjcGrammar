@@ -225,8 +225,8 @@ methodType
     ;
 
 propertyImplementation
-    : '@synthesize' propertySynthesizeList ';'
-    | '@dynamic' propertySynthesizeList ';'
+    : SYNTHESIZE propertySynthesizeList ';'
+    | DYNAMIC propertySynthesizeList ';'
     ;
 
 propertySynthesizeList
