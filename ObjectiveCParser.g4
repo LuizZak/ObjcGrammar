@@ -392,7 +392,7 @@ declaration
     ;
 
 functionPointer
-    : declarationSpecifiers LP '*' identifier RP LP functionPointerParameterList RP
+    : declarationSpecifiers LP '*' identifier? RP LP functionPointerParameterList? RP
     ;
 
 functionPointerParameterList
@@ -404,7 +404,7 @@ functionPointerParameterDeclarationList
     ;
 
 functionPointerParameterDeclaration
-    : declarationSpecifiers declarator?
+    : (declarationSpecifiers | functionPointer) declarator?
     | VOID
     ;
 
