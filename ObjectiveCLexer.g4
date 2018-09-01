@@ -350,6 +350,7 @@ fragment EscapeSequence
     : '\\' ('b' | 't' | 'n' | 'f' | 'r' | '"' | '\'' | '\\')
     | OctalEscape
     | UnicodeEscape
+    | CUnicodeEscape
     ;
 
 fragment OctalEscape
@@ -359,6 +360,7 @@ fragment OctalEscape
     ;
 
 fragment UnicodeEscape:   '\\' 'u' HexDigit HexDigit HexDigit HexDigit;
+fragment CUnicodeEscape:   '\\' 'x' HexDigit HexDigit+;
 fragment HexDigit:        [0-9a-fA-F];
 
 fragment Ws: [ \r\n\t\u000C];

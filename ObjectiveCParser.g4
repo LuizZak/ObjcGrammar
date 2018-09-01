@@ -385,9 +385,27 @@ attributeParameterAssignment
 
 declaration
     : functionCallExpression
+    | functionPointer ';'
     | enumDeclaration
     | varDeclaration
     | typedefDeclaration
+    ;
+
+functionPointer
+    : declarationSpecifiers LP '*' identifier RP LP functionPointerParameterList RP
+    ;
+
+functionPointerParameterList
+    : functionPointerParameterDeclarationList (',' ELIPSIS)?
+    ;
+
+functionPointerParameterDeclarationList
+    : functionPointerParameterDeclaration (',' functionPointerParameterDeclaration)*
+    ;
+
+functionPointerParameterDeclaration
+    : declarationSpecifiers declarator?
+    | VOID
     ;
 
 functionCallExpression
@@ -404,6 +422,7 @@ varDeclaration
 
 typedefDeclaration
     : attributeSpecifier? TYPEDEF (declarationSpecifiers typeDeclaratorList | declarationSpecifiers) macro? ';'
+    | attributeSpecifier? TYPEDEF functionPointer ';'
     ;
 
 typeDeclaratorList
@@ -439,6 +458,7 @@ structOrUnionSpecifier
 
 fieldDeclaration
     : specifierQualifierList fieldDeclaratorList macro? ';'
+    | functionPointer ';'
     ;
 
 specifierQualifierList
@@ -503,6 +523,15 @@ protocolQualifier
     ;
 
 typeSpecifier
+    : scalarTypeSpecifier pointer?
+    | typeofExpression
+    | KINDOF? genericTypeSpecifier pointer?
+    | structOrUnionSpecifier pointer?
+    | enumSpecifier
+    | KINDOF? identifier pointer?
+    ;
+
+scalarTypeSpecifier
     : VOID
     | CHAR
     | SHORT
@@ -512,11 +541,6 @@ typeSpecifier
     | DOUBLE
     | SIGNED
     | UNSIGNED
-    | typeofExpression
-    | KINDOF? genericTypeSpecifier pointer?
-    | structOrUnionSpecifier
-    | enumSpecifier
-    | KINDOF? identifier pointer?
     ;
 
 typeofExpression
@@ -576,7 +600,12 @@ arrayInitializer
     ;
 
 structInitializer
-    : '{' ('.' expression (',' '.' expression)* ','?)? '}'
+    : '{' (structInitializerItem (',' structInitializerItem)* ','?)? '}'
+    ;
+
+structInitializerItem
+    : '.' expression
+    | structInitializer
     ;
 
 initializerList
@@ -605,6 +634,7 @@ parameterDeclarationList
 
 parameterDeclaration
     : declarationSpecifiers declarator
+    | functionPointer
     | VOID
     ;
 
@@ -639,7 +669,7 @@ compoundStatement
     ;
 
 selectionStatement
-    : IF LP expression RP ifBody=statement (ELSE elseBody=statement)?
+    : IF LP expressions RP ifBody=statement (ELSE elseBody=statement)?
     | switchStatement
     ;
 
