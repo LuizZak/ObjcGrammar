@@ -596,7 +596,7 @@ macro
     ;
 
 arrayInitializer
-    : '{' (expressions ','?)? '}'
+    : '{' (expression (',' expression)* ','?)? '}'
     ;
 
 structInitializer
@@ -606,6 +606,7 @@ structInitializer
 structInitializerItem
     : '.' expression
     | structInitializer
+    | arrayInitializer
     ;
 
 initializerList
