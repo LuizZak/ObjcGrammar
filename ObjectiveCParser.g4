@@ -139,8 +139,8 @@ propertyAttribute
     | COPY
     | READONLY
     | READWRITE
-    | GETTER EQUAL identifier
-    | SETTER EQUAL identifier COLON
+    | GETTER ASSIGNMENT identifier
+    | SETTER ASSIGNMENT identifier COLON
     | nullabilitySpecifier
     | identifier
     ;
@@ -183,7 +183,7 @@ instanceMethodDeclaration
     ;
 
 methodDeclaration
-    : methodType? methodSelector attributeSpecifier* macro? ';'
+    : methodType? methodSelector attributeSpecifier* macro? SEMI
     ;
 
 implementationDefinitionList
@@ -234,7 +234,7 @@ propertySynthesizeList
     ;
 
 propertySynthesizeItem
-    : identifier (EQUAL identifier)?
+    : identifier (ASSIGNMENT identifier)?
     ;
 
 blockType
@@ -254,20 +254,20 @@ dictionaryExpression
     ;
 
 dictionaryPair
-    : castExpression ':' expression
+    : castExpression COLON expression
     ;
 
 arrayExpression
-    : '@' '[' (expressions ','?)? ']'
+    : AT LBRACK (expressions COMMA?)? RBRACK
     ;
 
 boxExpression
-    : '@' LP expression RP
-    | '@' (constant | identifier)
+    : AT LP expression RP
+    | AT (constant | identifier)
     ;
 
 blockParameters
-    : LP ((typeVariableDeclaratorOrName | VOID) (',' typeVariableDeclaratorOrName)*)? RP
+    : LP ((typeVariableDeclaratorOrName | VOID) (COMMA typeVariableDeclaratorOrName)*)? RP
     ;
 
 typeVariableDeclaratorOrName
@@ -280,7 +280,7 @@ blockExpression
     ;
 
 messageExpression
-    : '[' receiver messageSelector ']'
+    : LBRACK receiver messageSelector RBRACK
     ;
 
 receiver
@@ -294,28 +294,28 @@ messageSelector
     ;
 
 keywordArgument
-    : selector? ':' keywordArgumentType (',' keywordArgumentType)*
+    : selector? COLON keywordArgumentType (COMMA keywordArgumentType)*
     ;
 
 keywordArgumentType
-    : expressions nullabilitySpecifier? ('{' initializerList '}')?
+    : expressions nullabilitySpecifier? (LBRACE initializerList RBRACE)?
     ;
 
 selectorExpression
-    : '@selector' LP selectorName RP
+    : SELECTOR LP selectorName RP
     ;
 
 selectorName
     : selector
-    | (selector? ':')+
+    | (selector? COLON)+
     ;
 
 protocolExpression
-    : '@protocol' LP protocolName RP
+    : PROTOCOL LP protocolName RP
     ;
 
 encodeExpression
-    : '@encode' LP typeName RP
+    : ENCODE LP typeName RP
     ;
 
 typeVariableDeclarator
@@ -323,28 +323,28 @@ typeVariableDeclarator
     ;
 
 throwStatement
-    : '@throw' LP identifier RP
-    | '@throw' expression
+    : THROW LP identifier RP
+    | THROW expression
     ;
 
 tryBlock
-    : '@try' tryStatement=compoundStatement catchStatement* ('@finally' finallyStatement=compoundStatement)?
+    : TRY tryStatement=compoundStatement catchStatement* (FINALLY finallyStatement=compoundStatement)?
     ;
 
 catchStatement
-    : '@catch' LP typeVariableDeclarator RP compoundStatement
+    : CATCH LP typeVariableDeclarator RP compoundStatement
     ;
 
 synchronizedStatement
-    : '@synchronized' LP expression RP compoundStatement
+    : SYNCHRONIZED LP expression RP compoundStatement
     ;
 
 autoreleaseStatement
-    : '@autoreleasepool' compoundStatement
+    : AUTORELEASEPOOL compoundStatement
     ;
 
 functionDeclaration
-    : functionSignature ';'
+    : functionSignature SEMI
     ;
 
 functionDefinition
@@ -360,7 +360,7 @@ attribute
     ;
 
 attributeName
-    : 'const'
+    : CONST
     | identifier
     ;
 
@@ -369,7 +369,7 @@ attributeParameters
     ;
 
 attributeParameterList
-    : attributeParameter (',' attributeParameter)*
+    : attributeParameter (COMMA attributeParameter)*
     ;
 
 attributeParameter
@@ -380,12 +380,12 @@ attributeParameter
     ;
 
 attributeParameterAssignment
-    : attributeName '=' (constant | attributeName | stringLiteral)
+    : attributeName ASSIGNMENT (constant | attributeName | stringLiteral)
     ;
 
 declaration
     : functionCallExpression
-    | functionPointer ';'
+    | functionPointer SEMI
     | enumDeclaration
     | varDeclaration
     | typedefDeclaration
@@ -396,11 +396,11 @@ functionPointer
     ;
 
 functionPointerParameterList
-    : functionPointerParameterDeclarationList (',' ELIPSIS)?
+    : functionPointerParameterDeclarationList (COMMA ELIPSIS)?
     ;
 
 functionPointerParameterDeclarationList
-    : functionPointerParameterDeclaration (',' functionPointerParameterDeclaration)*
+    : functionPointerParameterDeclaration (COMMA functionPointerParameterDeclaration)*
     ;
 
 functionPointerParameterDeclaration
@@ -409,24 +409,24 @@ functionPointerParameterDeclaration
     ;
 
 functionCallExpression
-    : attributeSpecifier? identifier attributeSpecifier? LP directDeclarator RP ';'
+    : attributeSpecifier? identifier attributeSpecifier? LP directDeclarator RP SEMI
     ;
 
 enumDeclaration
-    : attributeSpecifier? TYPEDEF? enumSpecifier identifier? ';'
+    : attributeSpecifier? TYPEDEF? enumSpecifier identifier? SEMI
     ;
 
 varDeclaration
-    : (declarationSpecifiers initDeclaratorList | declarationSpecifiers) ';'
+    : (declarationSpecifiers initDeclaratorList | declarationSpecifiers) SEMI
     ;
 
 typedefDeclaration
-    : attributeSpecifier? TYPEDEF (declarationSpecifiers typeDeclaratorList | declarationSpecifiers) macro? ';'
-    | attributeSpecifier? TYPEDEF functionPointer ';'
+    : attributeSpecifier? TYPEDEF (declarationSpecifiers typeDeclaratorList | declarationSpecifiers) macro? SEMI
+    | attributeSpecifier? TYPEDEF functionPointer SEMI
     ;
 
 typeDeclaratorList
-    : declarator (',' declarator)*
+    : declarator (COMMA declarator)*
     ;
 
 declarationSpecifiers
@@ -441,24 +441,24 @@ declarationSpecifiers
     ;
 
 attributeSpecifier
-    : '__attribute__' LP LP attribute (',' attribute)* RP RP
+    : '__attribute__' LP LP attribute (COMMA attribute)* RP RP
     ;
 
 initDeclaratorList
-    : initDeclarator (',' initDeclarator)*
+    : initDeclarator (COMMA initDeclarator)*
     ;
 
 initDeclarator
-    : declarator ('=' initializer)?
+    : declarator (ASSIGNMENT initializer)?
     ;
 
 structOrUnionSpecifier
-    : (STRUCT | UNION) (identifier | identifier? '{' fieldDeclaration+ '}')
+    : (STRUCT | UNION) (identifier | identifier? LBRACE fieldDeclaration+ RBRACE)
     ;
 
 fieldDeclaration
-    : specifierQualifierList fieldDeclaratorList macro? ';'
-    | functionPointer ';'
+    : specifierQualifierList fieldDeclaratorList macro? SEMI
+    | functionPointer SEMI
     ;
 
 specifierQualifierList
@@ -548,25 +548,25 @@ typeofExpression
     ;
 
 fieldDeclaratorList
-    : fieldDeclarator (',' fieldDeclarator)*
+    : fieldDeclarator (COMMA fieldDeclarator)*
     ;
 
 fieldDeclarator
     : declarator
-    | declarator? ':' constant
+    | declarator? COLON constant
     ;
 
 enumSpecifier
-    : ENUM (identifier? ':' typeName)? (identifier ('{' enumeratorList '}')? | '{' enumeratorList '}')
-    | (NS_OPTIONS | NS_ENUM) LP typeName ',' identifier RP '{' enumeratorList '}'
+    : ENUM (identifier? COLON typeName)? (identifier (LBRACE enumeratorList RBRACE)? | LBRACE enumeratorList RBRACE)
+    | (NS_OPTIONS | NS_ENUM) LP typeName COMMA identifier RP LBRACE enumeratorList RBRACE
     ;
 
 enumeratorList
-    : enumerator (',' enumerator)* ','?
+    : enumerator (COMMA enumerator)* COMMA?
     ;
 
 enumerator
-    : enumeratorIdentifier ('=' expression)?
+    : enumeratorIdentifier (ASSIGNMENT expression)?
     ;
 
 enumeratorIdentifier
@@ -579,11 +579,11 @@ directDeclarator
     ;
 
 declaratorSuffix
-    : '[' constantExpression? ']'
+    : LBRACK constantExpression? RBRACK
     ;
 
 parameterList
-    : parameterDeclarationList (',' ELIPSIS)?
+    : parameterDeclarationList (COMMA ELIPSIS)?
     ;
 
 pointer
@@ -591,15 +591,15 @@ pointer
     ;
 
 macro
-    : identifier (LP primaryExpression (',' primaryExpression)* RP)?
+    : identifier (LP primaryExpression (COMMA primaryExpression)* RP)?
     ;
 
 arrayInitializer
-    : '{' (expression (',' expression)* ','?)? '}'
+    : LBRACE (expression (COMMA expression)* COMMA?)? RBRACE
     ;
 
 structInitializer
-    : '{' (structInitializerItem (',' structInitializerItem)* ','?)? '}'
+    : LBRACE (structInitializerItem (COMMA structInitializerItem)* COMMA?)? RBRACE
     ;
 
 structInitializerItem
@@ -609,7 +609,7 @@ structInitializerItem
     ;
 
 initializerList
-    : initializer (',' initializer)* ','?
+    : initializer (COMMA initializer)* COMMA?
     ;
 
 typeName
@@ -620,16 +620,16 @@ typeName
 abstractDeclarator
     : pointer abstractDeclarator?
     | LP abstractDeclarator? RP abstractDeclaratorSuffix+
-    | ('[' constantExpression? ']')+
+    | (LBRACK constantExpression? RBRACK)+
     ;
 
 abstractDeclaratorSuffix
-    : '[' constantExpression? ']'
+    : LBRACK constantExpression? RBRACK
     | LP parameterDeclarationList? RP
     ;
 
 parameterDeclarationList
-    : parameterDeclaration (',' parameterDeclaration)*
+    : parameterDeclaration (COMMA parameterDeclaration)*
     ;
 
 parameterDeclaration
@@ -643,29 +643,29 @@ declarator
     ;
 
 statement
-    : labeledStatement ';'?
-    | compoundStatement ';'?
-    | selectionStatement ';'?
-    | iterationStatement ';'?
-    | jumpStatement ';'
-    | synchronizedStatement ';'?
-    | autoreleaseStatement ';'?
-    | throwStatement ';'
-    | tryBlock ';'?
-    | expressions ';'
-    | ';'
+    : labeledStatement SEMI?
+    | compoundStatement SEMI?
+    | selectionStatement SEMI?
+    | iterationStatement SEMI?
+    | jumpStatement SEMI
+    | synchronizedStatement SEMI?
+    | autoreleaseStatement SEMI?
+    | throwStatement SEMI
+    | tryBlock SEMI?
+    | expressions SEMI
+    | SEMI
     ;
 
 labeledStatement
-    : identifier ':' statement
+    : identifier COLON statement
     ;
 
 rangeExpression
-    :  expression ('...' expression)?
+    :  expression (ELIPSIS expression)?
     ;
 
 compoundStatement
-    : '{' (declaration | statement)* '}'
+    : LBRACE (declaration | statement)* RBRACE
     ;
 
 selectionStatement
@@ -674,11 +674,11 @@ selectionStatement
     ;
 
 switchStatement
-    : 'switch' LP expression RP switchBlock
+    : SWITCH LP expression RP switchBlock
     ;
 
 switchBlock
-    : '{' switchSection* '}'
+    : LBRACE switchSection* RBRACE
     ;
 
 switchSection
@@ -686,8 +686,8 @@ switchSection
     ;
 
 switchLabel
-    : 'case' (rangeExpression | LP rangeExpression RP) ':'
-    | 'default' ':'
+    : CASE (rangeExpression | LP rangeExpression RP) COLON
+    | DEFAULT COLON
     ;
 
 iterationStatement
@@ -698,15 +698,15 @@ iterationStatement
     ;
 
 whileStatement
-    : 'while' LP expression RP statement
+    : WHILE LP expression RP statement
     ;
 
 doStatement
-    : 'do' statement 'while' LP expression RP ';'
+    : DO statement WHILE LP expression RP SEMI
     ;
 
 forStatement
-    : 'for' LP forLoopInitializer? ';' expression? ';' expressions? RP statement
+    : FOR LP forLoopInitializer? SEMI expression? SEMI expressions? RP statement
     ;
 
 forLoopInitializer
@@ -715,7 +715,7 @@ forLoopInitializer
     ;
 
 forInStatement
-    : 'for' LP typeVariableDeclarator 'in' expression? RP statement
+    : FOR LP typeVariableDeclarator IN expression? RP statement
     ;
 
 jumpStatement
@@ -726,7 +726,7 @@ jumpStatement
     ;
 
 expressions
-    : expression (',' expression)*
+    : expression (COMMA expression)*
     ;
 
 expression
@@ -749,7 +749,7 @@ expression
     ;
 
 assignmentOperator
-    : '=' | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|='
+    : ASSIGNMENT | '*=' | '/=' | '%=' | '+=' | '-=' | '<<=' | '>>=' | '&=' | '^=' | '|='
     ;
 
 castExpression
@@ -778,8 +778,8 @@ unaryExpression
 unaryOperator
     : '&'
     | '*'
-    | '+'
-    | '-'
+    | ADD
+    | SUB
     | '~'
     | BANG
     ;
@@ -797,7 +797,7 @@ postfixExpr
     ;
 
 argumentExpressionList
-    : argumentExpression (',' argumentExpression)*
+    : argumentExpression (COMMA argumentExpression)*
     ;
 
 argumentExpression
@@ -824,8 +824,8 @@ constant
     : HEX_LITERAL
     | OCTAL_LITERAL
     | BINARY_LITERAL
-    | ('+' | '-')? DECIMAL_LITERAL
-    | ('+' | '-')? FLOATING_POINT_LITERAL
+    | (ADD | SUB)? DECIMAL_LITERAL
+    | (ADD | SUB)? FLOATING_POINT_LITERAL
     | CHARACTER_LITERAL
     | NIL
     | NULL
