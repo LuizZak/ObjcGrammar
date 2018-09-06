@@ -49,32 +49,32 @@ topLevelDeclaration
     ;
 
 importDeclaration
-    : '@import' identifier ';'
+    : IMPORT identifier SEMI
     ;
 
 classInterface
     : IB_DESIGNABLE?
-      '@interface'
-       className (':' superclassName)? (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
-      '@end'
+      INTERFACE
+       className (COLON superclassName)? (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
+      END
     ;
 
 categoryInterface
-    : '@interface'
+    : INTERFACE
        categoryName=className LP identifier? RP (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
-      '@end'
+      END
     ;
 
 classImplementation
-    : '@implementation'
-       className(':' superclassName)? instanceVariables? implementationDefinitionList?
-      '@end'
+    : IMPLEMENTATION
+       className(COLON superclassName)? instanceVariables? implementationDefinitionList?
+      END
     ;
 
 categoryImplementation
-    : '@implementation'
+    : IMPLEMENTATION
        categoryName=className LP identifier RP implementationDefinitionList?
-      '@end'
+      END
     ;
 
 className
@@ -90,7 +90,7 @@ genericTypeSpecifier
     ;
 
 genericSuperclassSpecifier
-    : LT (superclassTypeSpecifierWithPrefixes (',' superclassTypeSpecifierWithPrefixes)*)? GT
+    : LT (superclassTypeSpecifierWithPrefixes (COMMA superclassTypeSpecifierWithPrefixes)*)? GT
     ;
 
 superclassTypeSpecifierWithPrefixes
@@ -98,9 +98,9 @@ superclassTypeSpecifierWithPrefixes
     ;
 
 protocolDeclaration
-    : '@protocol'
+    : PROTOCOL
        protocolName (LT protocolList GT)? protocolDeclarationSection*
-      '@end'
+      END
     ;
 
 protocolDeclarationSection
@@ -109,23 +109,23 @@ protocolDeclarationSection
     ;
 
 protocolDeclarationList
-    : '@protocol' protocolList ';'
+    : PROTOCOL protocolList SEMI
     ;
 
 classDeclarationList
-    : '@class' identifier (',' identifier)* ';'
+    : CLASS identifier (COMMA identifier)* SEMI
     ;
 
 protocolList
-    : protocolName (',' protocolName)*
+    : protocolName (COMMA protocolName)*
     ;
 
 propertyDeclaration
-    : '@property' (LP propertyAttributesList RP)? ibOutletQualifier? IB_INSPECTABLE? fieldDeclaration
+    : PROPERTY (LP propertyAttributesList RP)? ibOutletQualifier? IB_INSPECTABLE? fieldDeclaration
     ;
 
 propertyAttributesList
-    : propertyAttribute (',' propertyAttribute)*
+    : propertyAttribute (COMMA propertyAttribute)*
     ;
 
 propertyAttribute
@@ -139,19 +139,19 @@ propertyAttribute
     | COPY
     | READONLY
     | READWRITE
-    | GETTER '=' identifier
-    | SETTER '=' identifier ':'
+    | GETTER EQUAL identifier
+    | SETTER EQUAL identifier COLON
     | nullabilitySpecifier
     | identifier
     ;
 
 protocolName
     : LT protocolList GT
-    | ('__covariant' | '__contravariant')?  identifier
+    | (COVARIANT | CONTRAVARIANT)?  identifier
     ;
 
 instanceVariables
-    : '{' visibilitySection* '}'
+    : LBRACE visibilitySection* RBRACE
     ;
 
 visibilitySection
@@ -175,11 +175,11 @@ interfaceDeclarationList
     ;
 
 classMethodDeclaration
-    : '+' methodDeclaration
+    : ADD methodDeclaration
     ;
 
 instanceMethodDeclaration
-    : '-' methodDeclaration
+    : SUB methodDeclaration
     ;
 
 methodDeclaration
@@ -195,29 +195,29 @@ implementationDefinitionList
     )+;
 
 classMethodDefinition
-    : '+' methodDefinition
+    : ADD methodDefinition
     ;
 
 instanceMethodDefinition
-    : '-' methodDefinition
+    : SUB methodDefinition
     ;
 
 methodDefinition
-    : methodType? methodSelector initDeclaratorList? ';'? attributeSpecifier? compoundStatement ';'?
+    : methodType? methodSelector initDeclaratorList? SEMI? attributeSpecifier? compoundStatement SEMI?
     ;
 
 methodSelector
     : selector
-    | keywordDeclarator+ (',' '...')?
+    | keywordDeclarator+ (COMMA ELIPSIS)?
     ;
 
 keywordDeclarator
-    : selector? ':' methodType* arcBehaviourSpecifier? identifier
+    : selector? COLON methodType* arcBehaviourSpecifier? identifier
     ;
 
 selector
     : identifier
-    | 'return'
+    | RETURN
     ;
 
 methodType
@@ -225,16 +225,16 @@ methodType
     ;
 
 propertyImplementation
-    : SYNTHESIZE propertySynthesizeList ';'
-    | DYNAMIC propertySynthesizeList ';'
+    : SYNTHESIZE propertySynthesizeList SEMI
+    | DYNAMIC propertySynthesizeList SEMI
     ;
 
 propertySynthesizeList
-    : propertySynthesizeItem (',' propertySynthesizeItem)*
+    : propertySynthesizeItem (COMMA propertySynthesizeItem)*
     ;
 
 propertySynthesizeItem
-    : identifier ('=' identifier)?
+    : identifier (EQUAL identifier)?
     ;
 
 blockType
@@ -242,7 +242,7 @@ blockType
     ;
 
 genericsSpecifier
-    : LT (typeSpecifierWithPrefixes (',' typeSpecifierWithPrefixes)*)? GT
+    : LT (typeSpecifierWithPrefixes (COMMA typeSpecifierWithPrefixes)*)? GT
     ;
 
 typeSpecifierWithPrefixes
@@ -250,7 +250,7 @@ typeSpecifierWithPrefixes
     ;
 
 dictionaryExpression
-    : '@' '{' (dictionaryPair (',' dictionaryPair)* ','?)? '}'
+    : AT LBRACE (dictionaryPair (COMMA dictionaryPair)* COMMA?)? RBRACE
     ;
 
 dictionaryPair
@@ -571,7 +571,6 @@ enumerator
 
 enumeratorIdentifier
     : identifier
-    | DEFAULT
     ;
 
 directDeclarator
