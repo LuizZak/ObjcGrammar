@@ -453,7 +453,7 @@ initDeclarator
     ;
 
 structOrUnionSpecifier
-    : (STRUCT | UNION) (identifier | identifier? LBRACE fieldDeclaration+ RBRACE)
+    : (STRUCT | UNION) attributeSpecifier* (identifier | identifier? LBRACE fieldDeclaration+ RBRACE)
     ;
 
 fieldDeclaration
