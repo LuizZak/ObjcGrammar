@@ -113,7 +113,7 @@ protocolDeclarationList
     ;
 
 classDeclarationList
-    : CLASS identifier (COMMA identifier)* SEMI
+    : CLASS className (COMMA className)* SEMI
     ;
 
 protocolList
