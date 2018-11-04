@@ -747,6 +747,7 @@ expression
     | expression QUESTION trueExpression=expression? COLON falseExpression=expression
 
     | unaryExpression assignmentOperator assignmentExpression=expression
+    | LP compoundStatement RP
     ;
 
 assignmentOperator
