@@ -218,6 +218,9 @@ keywordDeclarator
 selector
     : identifier
     | RETURN
+    | SWITCH
+    | IF
+    | ELSE
     ;
 
 methodType
