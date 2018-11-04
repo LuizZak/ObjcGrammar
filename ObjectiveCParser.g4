@@ -221,6 +221,7 @@ selector
     | SWITCH
     | IF
     | ELSE
+    | DEFAULT
     ;
 
 methodType
