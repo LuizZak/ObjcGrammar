@@ -55,8 +55,13 @@ importDeclaration
 classInterface
     : IB_DESIGNABLE?
       INTERFACE
-       className (COLON superclassName)? (LT protocolList GT)? instanceVariables? interfaceDeclarationList?
+       classInterfaceName instanceVariables? interfaceDeclarationList?
       END
+    ;
+
+classInterfaceName
+    : className (COLON superclassName)? (LT protocolList GT)?
+    | className (COLON genericSuperclassName)? (LT protocolList GT)?
     ;
 
 categoryInterface
@@ -67,8 +72,13 @@ categoryInterface
 
 classImplementation
     : IMPLEMENTATION
-       className(COLON superclassName)? instanceVariables? implementationDefinitionList?
+       classImplementatioName instanceVariables? implementationDefinitionList?
       END
+    ;
+
+classImplementatioName
+    : className (COLON superclassName)?
+    | className (COLON genericSuperclassName)?
     ;
 
 categoryImplementation
@@ -82,7 +92,11 @@ className
     ;
 
 superclassName
-    : identifier genericSuperclassSpecifier?
+    : identifier
+    ;
+
+genericSuperclassName
+    : identifier genericSuperclassSpecifier
     ;
 
 genericTypeSpecifier
@@ -94,7 +108,7 @@ genericSuperclassSpecifier
     ;
 
 superclassTypeSpecifierWithPrefixes
-    : typePrefix* typeSpecifier pointer
+    : typePrefix* typeSpecifier pointer?
     ;
 
 protocolDeclaration
