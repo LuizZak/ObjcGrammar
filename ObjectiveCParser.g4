@@ -575,7 +575,8 @@ enumeratorIdentifier
 
 directDeclarator
     : (identifier | LP declarator RP) declaratorSuffix*
-    | LP '^' nullabilitySpecifier? identifier? RP blockParameters
+    | LP BITXOR nullabilitySpecifier? identifier? RP blockParameters
+    | LP MUL nullabilitySpecifier? identifier? RP blockParameters
     ;
 
 declaratorSuffix
